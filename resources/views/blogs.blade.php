@@ -8,8 +8,8 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-md sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100 shadow-md">
                     <form id="postform" method="post">
 
                         <label for="title" class="block text-gray-300 text-sm font-medium mb-1">Title</label>
@@ -37,7 +37,7 @@
 
                         @foreach ($posts as $post)
                             <div
-                                class="flex flex-col space-x-4 p-4 mb-4 mt-4  rounded-lg shadow-sm bg-gray-900">
+                                class="flex flex-col space-x-4 p-4 mb-4 mt-4  rounded-lg shadow-md bg-gray-900">
 
 
                                 <span class="text-sm text-gray-200">{{ $post->user->name }}</span>

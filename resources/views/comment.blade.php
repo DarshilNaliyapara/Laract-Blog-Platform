@@ -1,6 +1,6 @@
 @foreach ($posts as $post)
     <div id="post"
-        class="flex flex-col justify-between space-x-4 p-4 mb-4 mt-4 border border-gray-200 rounded-lg shadow-sm bg-white
+        class="flex flex-col justify-between space-x-4 p-4 mb-4 mt-4 rounded-lg shadow-md bg-white
                dark:bg-gray-900  dark:border-gray-700">
 
         <span class="text-sm text-gray-600 dark:text-gray-400">{{ $post->user->name }}</span>
@@ -39,16 +39,17 @@
         </div>
 
         <form id="comment-form">
-            <input type="text" data-commentid="{{ $post->id }}" id="comment" name="comment"
+            <x-text-input type="text" data-commentid="{{ $post->id }}" id="comment" name="comment"
                 class="rounded-lg border-gray-200 p-2 mt-2 comment dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                placeholder="Comment">
+                placeholder="Comment"/>
+
             <div class="flex items-center space-x-2 mt-4">
                 <x-primary-button type="submit" data-comment-btnid="{{ $post->id }}"
-                    class="comment-btn dark:hover:bg-green700 dark:bg-green-600 dark:text-gray-200">
+                    class="comment-btn  dark:hover:bg-blue-700 focus:ring-blue-500 dark:active:bg-blue-400 dark:bg-blue-400">
                     Comment
                 </x-primary-button>
                 <x-primary-button data-show-comment-btnid="{{ $post->id }}" type="button"
-                    class="show-comment-btn dark:hover:bg-green-700 dark:bg-green-600 dark:text-gray-200">
+                    class="show-comment-btn dark:hover:bg-green-700 dark:bg-green-600 dark:text-gray-200 dark:text-gray-200">
                     Comments
                 </x-primary-button>
             </form>

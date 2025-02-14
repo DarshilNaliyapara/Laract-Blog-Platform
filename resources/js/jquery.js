@@ -89,7 +89,7 @@ $(document).ready(function () {
                     title: "Error",
                     text: "Field is Empty!!",
                     icon: "error"
-                }).then(()=>{
+                }).then(() => {
                     form.find(".comment-btn").prop("disabled", false).html("Comment");
 
                 });
@@ -176,6 +176,113 @@ $(document).ready(function () {
                     })
 
             }
+        });
+    });
+    $(".setrolesbtn").click(function () {
+        let row = $(this).closest("tr");
+        let permissionsDiv = row.find(".permissions");
+        permissionsDiv.show();
+
+        let userId = row.find(".username").data("userid");
+        let buttonRoleId = $(this).data("setroles");
+        if (userId !== buttonRoleId) {
+            console.log("Error: ID did not match.");
+            return;
+        }
+        $(".setrolesbtn").click(function () {
+            $(this).prop("type", "submit");
+
+            $("form.set-role-form").on("submit", function (e) {
+                e.preventDefault();
+                $(".setrolesbtn").prop("disabled", true);
+
+                let selectedRoles = $(this).find(".set-role:checked").map(function () {
+                    return $(this).val();
+                }).get();
+                console.log(selectedRoles);
+                let userData = $(this).find(".role-useremail").val();
+                ajaxform("/users/set-roles-and-permission", "POST", {
+                    user_email: userData,
+                    roles: selectedRoles
+                }, function (response) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Roles Added Successfully!",
+                        showConfirmButton: false,
+                    });
+                    console.log("Success:" + response);
+                    location.reload();
+                }, function (xhr) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Error While Adding Roles!",
+
+                    });
+                    console.log("Error:", xhr.responseJSON);
+                });
+            });
+
+        });
+    });
+
+    $(".removerolesbtn").click(function () {
+        let row = $(this).closest("tr");
+        let permissionsDiv = row.find(".remove-role-form-group");
+        permissionsDiv.show();
+
+        let userId = row.find(".username").data("userid");
+        let buttonRoleId = $(this).data("removeroles");
+        if (userId !== buttonRoleId) {
+            console.log("Error: ID did not match.");
+            return;
+        }
+        $(".removerolesbtn").click(function () {
+            $(this).prop("type", "submit");
+
+            $("form.remove-role-form").on("submit", function (e) {
+                e.preventDefault();
+                $(".removerolesbtn").prop("disabled", true);
+
+                let selectedRoles = $(this).find(".remove-role:checked").map(function () {
+                    return $(this).val();
+                }).get();
+                console.log(selectedRoles);
+                ajaxform("/users/remove/roles-and-permission", "POST",
+                    {
+                        user_id: userId,
+                        roles: selectedRoles,
+
+                    }, function (response) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Roles Removed Successfully!",
+                            showConfirmButton: false,
+                        });
+                        console.log("Success:" + response);
+                        location.reload();
+                    }, function (xhr) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Error While Removing Roles!",
+
+                        });
+                        console.log("Error:", xhr.responseJSON);
+                    });
+            });
+
+        });
+    });
+
+
+    $("#search").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        console.log(value);
+        $("#userroles_table tr ").filter(function() {
+            $(this).toggle($(this).find(".useremail, .userroles").text().toLowerCase().indexOf(value) > -1)
         });
     });
 });
