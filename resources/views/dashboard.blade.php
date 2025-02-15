@@ -10,23 +10,35 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-black">
                     @if (Route::currentrouteName() === 'blogs.show')
-                        <div class="flex-shrink-0">
-                            <span class="text-sm text-white">{{ $blog->user->name }}</span>
+                        <div id="post"
+                            class="flex flex-col justify-between space-x-4 p-4 mb-4 mt-4 rounded-lg shadow-md bg-white
+                               dark:bg-gray-900  dark:border-gray-700">
+
+                            <span class="text-sm text-gray-600 dark:text-gray-400">{{ $blog->user->name }}</span>
                             <small
-                                class="ml-2 text-sm text-white">{{ $blog->created_at->format('j M Y, g:i a') }}</small>
+                                class="ml-2 text-sm text-gray-400 dark:text-gray-500">{{ $blog->created_at->format('j M Y, g:i a') }}</small>
 
                             @unless ($blog->created_at->eq($blog->updated_at))
-                                <small class="text-sm text-white"> &middot; {{ __('edited') }}</small>
+                                <small class="text-sm text-gray-400 dark:text-gray-500"> &middot;
+                                    {{ __('edited') }}</small>
                             @endunless
-                        </div>
-
-                        <div class="flex-grow">
                             @php
                                 $postContent = json_decode($blog->posts, true);
                             @endphp
-                            <p class="text-xl font-bold text-gray-100">{{ $postContent['title'] }}</p>
-                            <p class="text-base text-gray-300 mt-2">{{ $postContent['post'] }}</p>
 
+                            <a href="{{ route('blogs.show', $blog->id) }}" class="mt-1">
+                                <p class="text-xl font-bold text-gray-900 underline dark:text-gray-100">
+                                    {{ $postContent['title'] }}</p>
+                            </a>
+
+                            @foreach ($blog->photos as $photo)
+                                <img class=" mt-3 rounded-lg shadow-md h-80 w-96 object-cover ..." src="{{ asset('/storage/' . $photo->photo_name) }}"
+                                    alt="">
+                                {{-- <p>{{ ltrim($photo->photo_name, 'files/') }}</p> --}}
+                            @endforeach
+
+                            <p id="postContent" class="postContent text-base text-gray-700 mt-2 dark:text-gray-300"
+                                data-postvalue="{{ $postContent['post'] }}"></p>
                         </div>
                     @else
                         @if (count($posts) > 0)
@@ -50,6 +62,4 @@
 
 </x-app-layout>
 
-<script>
-
-</script>
+<script></script>
