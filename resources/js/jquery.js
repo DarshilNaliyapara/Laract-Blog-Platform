@@ -1,23 +1,15 @@
 import ajaxform from './custom.js';
 $(document).ready(function () {
     $(".comment-btn, .comment, .postcomments").hide();
-
-    $(".postContent").each(function () {
-        let text = $(this).data('postvalue');
-        console.log(text);
-        let linkedText = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" class="text-blue-500 underline">$1</a>');
-        $(this).html(linkedText);
-    });
-
     $(".blogbtn").click(function (e) {
         e.preventDefault();
         $(this).prop("disabled", true).html("Processing...");
+
         const form = document.getElementById("postform");
         let inputData = new FormData(form);
         let blogId = $(".blogbtn").data("blogid");
         if (blogId) {
             inputData.append("_method", "PATCH");
-            inputData.append("blog_id", blogId);
         }
         let url = blogId ? `/blogs/${blogId}` : "/blogs";
 
@@ -286,10 +278,10 @@ $(document).ready(function () {
     });
 
 
-    $("#search").on("keyup", function () {
+    $("#search").on("keyup", function() {
         var value = $(this).val().toLowerCase();
         console.log(value);
-        $("#userroles_table tr ").filter(function () {
+        $("#userroles_table tr ").filter(function() {
             $(this).toggle($(this).find(".useremail, .userroles").text().toLowerCase().indexOf(value) > -1)
         });
     });
