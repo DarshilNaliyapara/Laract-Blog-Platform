@@ -9,6 +9,7 @@
         </div>
 
         <div class="overflow-x-auto bg-gray-800 p-4 rounded-lg shadow-md ">
+            
             <x-text-input type="text" id="search" placeholder="Search..." class="justify-center mb-3 "/>
             <table class="w-full border border-gray-700 rounded-lg shadow-sm">
                 <thead class="bg-gray-700 text-white text-md uppercase">
