@@ -11,6 +11,7 @@ $(document).ready(function () {
 
     $(".blogbtn").click(function (e) {
         e.preventDefault();
+        $(".err").text("");
         $(this).prop("disabled", true).html("Processing...");
         const form = document.getElementById("postform");
         let inputData = new FormData(form);
@@ -38,47 +39,60 @@ $(document).ready(function () {
                     showConfirmButton: false,
                 });
                 console.log(response.message);
-                $(".blogbtn").prop("disabled", false).html("Submit");
+                $(".blogbtn").prop("disabled", false).html("Post");
                 $("#postform").trigger("reset");
-                window.location.href = "/";
+                window.location.href = "/home";
             },
             error: function (xhr) {
-                Swal.fire({
-                    title: "Error",
-                    text: xhr.responseJSON?.message || "Something went wrong",
-                    icon: "error",
-                });
+                // Swal.fire({
+                //     title: "Error",
+                //     text: xhr.responseJSON?.message || "Something went wrong",
+                //     icon: "error",
+                // });
+                let errors = xhr.responseJSON.errors
+                $(".err").text("");
+
+                // Show errors dynamically
+                if (errors.title) {
+                    $("#errtitle").text(errors.title[0]);
+                }
+                if (errors.post) {
+                    $("#errpost").text(errors.post[0]);
+                }
+                if (errors.file) {
+                    $("#errfile").text(errors.file[0]);
+                }
                 console.log(xhr.responseJSON);
-                $(".blogbtn").prop("disabled", false).html("Submit");
+                $(".blogbtn").prop("disabled", false).html("Post");
             },
         });
     });
     $(".show-comment-btn").click(function () {
         var commentSection = $(this).closest("form").find(".comment");
+        var errline = $(this).closest("form").find(".err");
         var commentButton = $(this).closest("form").find(".comment-btn");
         var form = $(this).closest("form");
         var postComments = form.siblings(".postcomments");
 
-        postComments.toggle();
-        commentSection.toggle();
-        commentButton.toggle();
 
-        if (commentSection.is(":visible")) {
-            $(this).html("Hide");
-        } else {
-            $(this).html("Comments");
-        }
+        postComments.slideToggle(100);
+        commentSection.fadeToggle(100);
+        commentButton.fadeToggle(100);
+
+        commentSection.promise().done(() => {
+            $(this).html(commentSection.is(":visible") ? "Hide" : "Comments", errline.text(""));
+        });
     });
 
     $("form#comment-form").submit(function (e) {
         e.preventDefault();
+        $(".err").text("");
 
         var form = $(this);
-        var commentInput = form.find("input[name='comment']").val();
+        var commentInput = form.find("input[name='comment']").val();   
         var commentId = form.find("input[name='comment']").data("commentid");
         form.find(".comment-btn").prop("disabled", true).html("Processing...");
-
-
+      
         ajaxform('comments/', 'POST',
             {
                 comment: commentInput,
@@ -86,21 +100,29 @@ $(document).ready(function () {
             },
             function (response) {
                 console.log(response.message);
-                form.find("input[name='comment']").val("").hide();
-                form.find(".comment-btn").hide();
+                form.find("input[name='comment']").val("").fadeOut(100);
+                form.find(".comment-btn").fadeOut(100)
+                form.siblings(".postcomments").slideUp(100);
                 form.find(".show-comment-btn").html("Comment");
 
                 location.reload();
             },
             function (xhr, status, error) {
-                Swal.fire({
-                    title: "Error",
-                    text: "Field is Empty!!",
-                    icon: "error"
-                }).then(() => {
-                    form.find(".comment-btn").prop("disabled", false).html("Comment");
+                // Swal.fire({
+                //     title: "Error",
+                //     text: "Field is Empty!!",
+                //     icon: "error"
+                // }).then(() => {
+                let errors = xhr.responseJSON.errors
+                $(".err").text("");
 
-                });
+
+                if (errors.comment) {
+                    $("#errcmt").text(errors.comment[0]);
+                }
+
+
+                form.find(".comment-btn").prop("disabled", false).html("Comment");
                 console.error(xhr.responseText);
 
             }
@@ -132,6 +154,7 @@ $(document).ready(function () {
                             title: "Deleted Successfully!",
                             showConfirmButton: false,
                         });
+
                         location.reload();
                     },
                     function (xhr) {
@@ -170,9 +193,10 @@ $(document).ready(function () {
                         Swal.fire({
                             position: "center",
                             icon: "success",
-                            title: "Deleted Successfully!",
+                            title: "Comment Deleted Successfully!",
                             showConfirmButton: false,
                         });
+
                         location.reload();
                     },
                     function (xhr) {

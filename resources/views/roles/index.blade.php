@@ -39,6 +39,7 @@
                                         @foreach ($user->roles as $role)
                                             <div class="form-check flex items-center gap-2 mb-1">
                                                 <input type="hidden" class="role-useremail" value="{{ $user->email }}">
+                                                
                                                 <input class="form-check-input remove-role h-5 w-5 text-red-500 border-gray-400 rounded focus:ring focus:ring-red-500"
                                                     type="checkbox" name="roles[]" value="{{ $role->id }}">
                                                 <label class="form-check-label text-gray-300">{{ $role->name }}</label>

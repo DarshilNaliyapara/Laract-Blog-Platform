@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Blog extends Model
-{  protected $fillable = ['posts','user_id'];
+{  protected $fillable = ['posts','user_id','slug','photo_name'];
 
-
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     public function comments()
     {
         return $this->hasMany(Comment::class);

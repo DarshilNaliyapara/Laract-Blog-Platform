@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\User;
 use App\Models\Photo;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +34,7 @@ class BlogController extends Controller
             return redirect(route('dashboard'));
         }
         if (!Gate::allows('update-post', $blog)) {
-            abort(403);
+            abort(401);
         }
 
         $val = json_decode($blog->posts, true);
@@ -47,28 +49,23 @@ class BlogController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|min:5|string',
-            'post' => 'required|min:15|string',
-            'file' => 'mimes:jpeg,jpg,png|max:3000',
+            'post' => 'required|min:15|string|regex:/^[^<>]*$/',
+            'file' => 'mimes:jpeg,jpg,png|max:5000',
         ]);
-        logger($validated);
-        $blog = $request->user()->blog()->create(['posts' => json_encode($validated)]);
+
+        $uid = Str::random(3) . rand(10, 99);
+        $uuid = $validated['title'] . '-' . $uid;
         $file = $request->file('file');
-        if($file){
-        $name = $file->getClientOriginalName();
-        $path = $request->file('file')->storeAs('files', $name, 'public');
-        $url = Storage::url($path);
-        logger(asset($url));
 
-        
-        logger($blog);
-        register_shutdown_function(function () use ($blog, $path) {
-            $blog->photos()->create([
-                'photo_name' => $path,
-            ]);
-        });
-    }
+        $slug = Str::slug($uuid);
+        if ($file) {
+            $name = $file->getClientOriginalName();
+            $path = $request->file('file')->storeAs('files', $name, 'public');
+        }
+        $blog = $request->user()->blog()->create(['posts' => json_encode($validated), 'slug' => $slug, 'photo_name' => $path]);
 
-        return redirect(route('dashboard'));
+
+        return redirect()->route('dashboard')->with('success', 'Blog created successfully.');
 
     }
     public function update(Request $request, Blog $blog)
@@ -78,8 +75,13 @@ class BlogController extends Controller
             'title' => 'required|min:5|string',
             'post' => 'required|min:15|string',
         ]);
+        $uid = Str::random(3) . rand(10, 99);
+        $uuid = $validated['title'] . '-' . $uid;
+        $slug = Str::slug($uuid);
 
-        $blog->update(['posts' => json_encode($validated)]);
+
+        logger($slug);
+        $blog->update(['posts' => json_encode($validated), 'slug' => $slug]);
 
         return redirect(route('dashboard'));
 
@@ -93,19 +95,21 @@ class BlogController extends Controller
     public function destroy(Blog $blog)
     {
 
-        $blog->delete();
-        $file = Photo::find($blog->id);
-        if (! $file) {
-            return redirect(route('dashboard'))->with('error', "File not found.");
-        }
-        $path = "public/" . $file->photo_name;
-        if (Storage::exists($path)) {
-            Storage::delete($path);
 
-            $file->delete();
-            return redirect(route('dashboard'))->with('status', "File deleted successfully");
+        $file = Photo::where('blog_id', $blog->id)->first();
+
+        if ($file) {
+            $path = $file->photo_name; // Directly use photo_name since it already has "files/"
+
+            Log::info("Checking path: " . $path);
+            Log::info("File exists? => " . (Storage::disk('public')->exists($path) ? 'true' : 'false'));
+
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path); // Use the correct disk
+
+            }
         }
-       
+        $blog->delete();
         return redirect(route('dashboard'));
     }
 }

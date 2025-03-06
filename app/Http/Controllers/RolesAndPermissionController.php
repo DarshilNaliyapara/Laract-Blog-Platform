@@ -13,18 +13,18 @@ class RolesAndPermissionController extends Controller
        public function index()
     {
     
-        auth()->user()->hasRole('super_admin') ? true : abort(403);
+        auth()->user()->hasRole('super_admin') ? true : abort(401);
 
         $users = User::all();
 
-        $roles = Role::all()->except(1);
+        $roles = Role::all()->except(2);
 
         return view('roles.index', ['users' => $users,'roles'=>$roles]);
     }
 
     public function showcreateform()
     {
-        auth()->user()->hasRole('super_admin') ? true : abort(403);
+        auth()->user()->hasRole('super_admin') ? true : abort(401);
 
         $permissions = Permission::all();
 
@@ -32,7 +32,7 @@ class RolesAndPermissionController extends Controller
     }
     public function createrolesandpermission(Request $request,User $user)
     {
-        auth()->user()->hasRole('super_admin') ? true : abort(403);
+        auth()->user()->hasRole('super_admin') ? true : abort(401);
 
         $role = strtolower($request->role);
         $role = Role::firstOrCreate(['name' => $role]);

@@ -1,6 +1,6 @@
 @foreach ($posts as $post)
     <div id="post"
-        class="flex flex-col justify-between space-x-4 p-4 mb-4 mt-4 rounded-lg shadow-md bg-white
+        class="flex flex-col justify-between space-x-4 p-4 mb-4 mt-4 rounded-lg shadow-lg bg-white
                dark:bg-gray-900  dark:border-gray-700">
 
         <span class="text-sm text-gray-600 dark:text-gray-400">{{ $post->user->name }}</span>
@@ -14,11 +14,20 @@
             $postContent = json_decode($post->posts, true);
         @endphp
 
-        <a href="{{ route('blogs.show', $post->id) }}" class="mt-1">
+        <a href="{{ route('blogs.show', $post->slug) }}" class="mt-1">
             <p class="text-xl font-bold text-gray-900 underline dark:text-gray-100">{{ $postContent['title'] }}</p>
+            <div class="flex flex-wrap gap-4 mt-3">
+               
+                    <div class="relative w-full md:w-1/2 lg:w-1/3">
+
+                        <img class="cursor-pointer rounded-lg shadow-lg object-cover w-full h-full"
+                            src="{{ asset('/storage/' . $post->photo_name) }}" alt="Blog Image">
+                    </div>
+               
+            </div>
         </a>
         <p id="postContent" class="postContent text-base text-gray-700 mt-2 dark:text-gray-300"
-            data-postvalue="{{ $postContent['post'] }}"></p>
+            data-postvalue="{{ Str::words($postContent['post'], 20, '<strong>...Read More</strong>') }}"></p>
 
         <div class="mt-4 p-4 rounded-lg w-auto postcomments bg-gray-100 dark:bg-gray-800 dark:border-gray-700"
             data-commentid="{{ $post->id }}">
@@ -42,35 +51,38 @@
         </div>
 
         <form id="comment-form">
-            <x-text-input type="text" data-commentid="{{ $post->id }}" id="comment" name="comment"
-                class="rounded-lg border-gray-200 p-2 mt-2 comment dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+            <p class="text-red-500 text-sm mt-1 err" id="errcmt"></p>
+            <x-text-input type="text" data-commentid="{{ $post->id }}"  id="comment" name="comment"
+                class="rounded-lg border-gray-200 p-2 mt-2 mr-1 comment dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                 placeholder="Comment" />
 
-            <div class="flex items-center space-x-2 mt-4">
-                <x-primary-button type="submit" data-comment-btnid="{{ $post->id }}"
-                    class="comment-btn  dark:hover:bg-blue-700 focus:ring-blue-500 dark:active:bg-blue-400 dark:bg-blue-400">
+           
+            <div class="mt-4 sm:flex-row inline-flex">
+
+                <x-primary-button type="submit" data-comment-btnid="{{ $post->id }}" 
+                    class="comment-btn mr-2  dark:hover:bg-blue-700 focus:ring-blue-500 dark:active:bg-blue-400 dark:bg-blue-400">
                     Comment
                 </x-primary-button>
                 <x-primary-button data-show-comment-btnid="{{ $post->id }}" type="button"
                     class="show-comment-btn dark:hover:bg-green-700 dark:bg-green-600 dark:text-gray-200 dark:text-gray-200">
                     Comments
                 </x-primary-button>
+            </div>
         </form>
-        @if ($post->user_id === auth()->id())
-            <form id="dlt-form">
-                <x-danger-button class="dark:bg-red-700 dark:hover:bg-red-600 dark:text-white dlt-btn"
-                    data-dltbtnid="{{ $post->id }}">
-                    Delete
-                </x-danger-button>
-            </form>
-
-            <a href="{{ route('blogs.edit', $post->id) }}">
-                <x-secondary-button class="dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
-                    Edit
-                </x-secondary-button>
-            </a>
-        @endif
-    </div>
+        <div class="flex inline-flex">
+            @if ($post->user_id === auth()->id())
+                <form id="dlt-form">
+                    <x-danger-button class="mr-2 mt-2 dlt-btn dark:text-gray-100" data-dltbtnid="{{ $post->slug }}">
+                        Delete
+                    </x-danger-button>
+                </form>
+                <a href="{{ route('blogs.edit', $post->slug) }}">
+                    <x-secondary-button class="mt-2 inline-block">
+                        Edit
+                    </x-secondary-button>
+                </a>
+            @endif
+        </div>
 
     </div>
 @endforeach
