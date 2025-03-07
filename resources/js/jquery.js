@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     $(".postContent").each(function () {
         let text = $(this).data('postvalue');
-        console.log(text);
+       
         let linkedText = text.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" class="text-blue-500 underline">$1</a>');
         $(this).html(linkedText);
     });
@@ -38,7 +38,7 @@ $(document).ready(function () {
                     title: blogId ? "Post updated Successfully!" : "Post created Successfully!",
                     showConfirmButton: false,
                 });
-                console.log(response.message);
+               
                 $(".blogbtn").prop("disabled", false).html("Post");
                 $("#postform").trigger("reset");
                 window.location.href = "/home";
@@ -92,7 +92,6 @@ $(document).ready(function () {
     $("form#comment-form").submit(function (e) {
         e.preventDefault();
         $(".err").text("");
-
         var form = $(this);
         var commentInput = form.find("input[name='comment']").val();
         var commentId = form.find("input[name='comment']").data("commentid");
@@ -120,13 +119,9 @@ $(document).ready(function () {
                 // }).then(() => {
                 let errors = xhr.responseJSON.errors
                 $(".err").text("");
-
-
                 if (errors.comment) {
-                    $("#errcmt").text(errors.comment[0]);
+                   form.find(".errcmt").text(errors.comment[0]);
                 }
-
-
                 form.find(".comment-btn").prop("disabled", false).html("Comment");
                 console.error(xhr.responseText);
 
@@ -236,7 +231,7 @@ $(document).ready(function () {
                 let selectedRoles = $(this).find(".set-role:checked").map(function () {
                     return $(this).val();
                 }).get();
-                console.log(selectedRoles);
+                
                 let userData = $(this).find(".role-useremail").val();
                 ajaxform("/users/set-roles-and-permission", "POST", {
                     user_email: userData,
@@ -285,7 +280,7 @@ $(document).ready(function () {
                 let selectedRoles = $(this).find(".remove-role:checked").map(function () {
                     return $(this).val();
                 }).get();
-                console.log(selectedRoles);
+               
                 ajaxform("/users/remove/roles-and-permission", "POST",
                     {
                         user_id: userId,
@@ -337,14 +332,14 @@ $(document).ready(function () {
     });
     $("#blogsearch").on("keyup", function () {
         var value = $(this).val().toLowerCase();
-        console.log(value);
+       
         $(".post").filter(function () {
             $(this).toggle($(this).find(".posttitle, .postContent").text().toLowerCase().indexOf(value) > -1)
         });
     });
     $("#search").on("keyup", function () {
         var value = $(this).val().toLowerCase();
-        console.log(value);
+   
         $("#userroles_table tr ").filter(function () {
             $(this).toggle($(this).find(".useremail, .userroles").text().toLowerCase().indexOf(value) > -1)
         });

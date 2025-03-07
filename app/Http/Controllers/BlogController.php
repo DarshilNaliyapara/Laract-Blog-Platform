@@ -23,8 +23,7 @@ class BlogController extends Controller
             return redirect(route('dashboard'));
         }
         $posts = Auth::user()->blog()->with('user')->latest()->simplePaginate(2);
-        // $comments = Auth::user()->blog()->comments()->with('user')->latest();
-
+      
         return view('blogs', compact('user', 'posts', 'blog'));
 
     }
@@ -81,9 +80,6 @@ class BlogController extends Controller
         $uid = Str::random(3) . rand(10, 99);
         $uuid = $validated['title'] . '-' . $uid;
         $slug = Str::slug($uuid);
-
-
-        logger($slug);
         $blog->update(['posts' => json_encode($validated), 'slug' => $slug]);
 
         return redirect(route('dashboard'));

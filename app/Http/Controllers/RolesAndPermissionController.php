@@ -73,7 +73,6 @@ class RolesAndPermissionController extends Controller
         foreach ($request->roles as $role) {
 
             $removerole = Role::where('id', $role)->pluck('name');
-
             $user->removeRole($removerole->first());
         }
 

@@ -55,12 +55,10 @@
         </div>
 
         <form id="comment-form">
-            <p class="text-red-500 text-sm mt-1 err" id="errcmt"></p>
+            <p class="text-red-500 text-sm mt-1 err errcmt"></p>
             <x-text-input type="text" data-commentid="{{ $post->id }}" id="comment" name="comment"
                 class="rounded-lg border-gray-200 p-2 mt-2 mr-1 comment dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                 placeholder="Comment" />
-
-
             <div class="mt-4 sm:flex-row inline-flex">
 
                 @auth
