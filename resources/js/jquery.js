@@ -112,11 +112,6 @@ $(document).ready(function () {
                 location.reload();
             },
             function (xhr, status, error) {
-                // Swal.fire({
-                //     title: "Error",
-                //     text: "Field is Empty!!",
-                //     icon: "error"
-                // }).then(() => {
                 let errors = xhr.responseJSON.errors
                 $(".err").text("");
                 if (errors.comment) {
