@@ -11,15 +11,22 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RolesAndPermissionController;
 
 Route::get('/', function (User $user) {
+    $authuser = Auth::user();
+    if ($authuser) {
+        $posts = Blog::latest()->simplePaginate(4);
+        $comments = Comment::latest()->get();
+        return redirect(route('dashboard'));
+    } else{
     $posts = Blog::latest()->simplePaginate(4);
     $comments = Comment::latest()->get();
     return view('guest', compact('user', 'posts', 'comments'));
+    }
 });
 
 Route::get('/home', function (User $user) {
     $authuser = Auth::user();
     if ($authuser) {
-        $posts = Blog::latest()->simplePaginate(4);
+        $posts = Blog::latest()->simplePaginate(5);
         $comments = Comment::latest()->get();
         return view('Dashboard', compact('user', 'posts', 'comments'));
     } else {
@@ -30,8 +37,8 @@ Route::get('/home', function (User $user) {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 Route::resource('blogs', BlogController::class)->middleware(['auth', 'verified']);
 Route::resource('comments', CommentController::class)->middleware(['auth', 'verified']);

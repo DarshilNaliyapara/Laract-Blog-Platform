@@ -5,7 +5,7 @@ $(document).ready(function () {
     $(".postContent").each(function () {
         let text = $(this).data('postvalue');
         console.log(text);
-        let linkedText = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" class="text-blue-500 underline">$1</a>');
+        let linkedText = text.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" class="text-blue-500 underline">$1</a>');
         $(this).html(linkedText);
     });
 
@@ -49,18 +49,23 @@ $(document).ready(function () {
                 //     text: xhr.responseJSON?.message || "Something went wrong",
                 //     icon: "error",
                 // });
-                let errors = xhr.responseJSON.errors
+
                 $(".err").text("");
 
-                // Show errors dynamically
-                if (errors.title) {
-                    $("#errtitle").text(errors.title[0]);
-                }
-                if (errors.post) {
-                    $("#errpost").text(errors.post[0]);
-                }
-                if (errors.file) {
-                    $("#errfile").text(errors.file[0]);
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    let errors = xhr.responseJSON.errors;
+
+                    if (errors.title) {
+                        $("#errtitle").text(errors.title[0]);
+                    }
+                    if (errors.post) {
+                        $("#errpost").text(errors.post[0]);
+                    }
+                    if (errors.file) {
+                        $("#errfile").text(errors.file[0]);
+                    }
+                } else {
+                    console.log("Unexpected error format:", xhr.responseText);
                 }
                 console.log(xhr.responseJSON);
                 $(".blogbtn").prop("disabled", false).html("Post");
@@ -89,10 +94,10 @@ $(document).ready(function () {
         $(".err").text("");
 
         var form = $(this);
-        var commentInput = form.find("input[name='comment']").val();   
+        var commentInput = form.find("input[name='comment']").val();
         var commentId = form.find("input[name='comment']").data("commentid");
         form.find(".comment-btn").prop("disabled", true).html("Processing...");
-      
+
         ajaxform('comments/', 'POST',
             {
                 comment: commentInput,
@@ -303,13 +308,40 @@ $(document).ready(function () {
 
                         });
                         console.log("Error:", xhr.responseJSON);
-                    });
+                    }
+                );
             });
 
         });
     });
+    $(".del-account-btn").click(function () {
+        $(this).prop("type", "submit");
+        let userId = $(this).data('deleteaccount');
+        $("form.delete-user").on("submit", function (e) {
+            e.preventDefault();
+            ajaxform("/profile", "POST",
+                {
+                    user_id: userId,
+                     _method: "DELETE"
 
+                }, function (response) {
 
+                    console.log("Success:" + response);
+                    location.reload();
+                }, function (xhr) {
+
+                    console.log("Error:", xhr.responseJSON);
+                }
+            );
+        });
+    });
+    $("#blogsearch").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        console.log(value);
+        $(".post").filter(function () {
+            $(this).toggle($(this).find(".posttitle, .postContent").text().toLowerCase().indexOf(value) > -1)
+        });
+    });
     $("#search").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         console.log(value);

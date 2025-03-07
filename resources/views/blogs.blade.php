@@ -26,9 +26,10 @@
                         <p class="text-red-500 text-sm mt-1 err" id="errpost"></p>
 
                         @if (request()->routeIs('blogs.index'))
-                            <label for="file" 
-                                class="block text-gray-300 text-sm font-medium mt-2 mb-2" >Image</label>
-                            <input type="file" name="file" accept=".jpg,.png,.jpeg"  tabindex="0" data-toggle="tooltip" title="Choose Image file Less then 5Mb"
+                            <label for="file"
+                                class="block text-gray-300 text-sm font-medium mt-2 mb-2">Image</label>
+                            <input type="file" name="file" accept=".jpg,.png,.jpeg" tabindex="0"
+                                data-toggle="tooltip" title="Choose Image file Less then 5Mb"
                                 class="block file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-violet-700 hover:file:bg-violet-100 dark:file:bg-violet-600 dark:file:text-violet-100 dark:hover:file:bg-violet-500 ..." />
                             <p class="text-red-500 text-sm mt-1 err" id="errfile"></p>
                         @endif
@@ -67,20 +68,19 @@
                                 <a href="{{ route('blogs.show', $post->slug) }}" class="mt-1">
                                     <p class="text-xl font-bold text-gray-200 underline">{{ $postContent['title'] }}
                                     </p>
-                                    <div class="flex flex-wrap gap-4 mt-3">
-                                       
+                                    @if ($post->photo_name)
+                                        <div class="flex flex-wrap gap-4 mt-3">
                                             <div class="relative w-full md:w-1/2 lg:w-1/3">
-
                                                 <img class="cursor-pointer rounded-lg shadow-lg object-cover w-full h-full"
                                                     src="{{ asset('/storage/' . $post->photo_name) }}"
                                                     alt="Blog Image">
                                             </div>
-                                        
-                                    </div>
+                                        </div>
+                                    @endif
                                 </a>
 
                                 <p class=" postContent text-base text-gray-200 mt-2"
-                                    data-postvalue="{{ $postContent['post'] }}"></p>
+                                    data-postvalue="{!! nl2br(e($postContent['post'])) !!}"></p>
                                 <div class="mt-4 p-4 rounded-lg w-auto postcomments bg-gray-100 dark:bg-gray-800 dark:border-gray-700"
                                     data-commentid="{{ $post->id }}">
                                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">Comments

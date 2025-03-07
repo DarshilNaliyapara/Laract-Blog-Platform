@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\User;
 use App\Models\Photo;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Database\Factories\UserFactory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -45,19 +47,27 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+        if ($request->ajax()) {
+            $userid = $request->user_id;
+            $user = User::where('id', $userid)->first();
+            $user->delete();
+            return redirect(route('users.index'));
 
-        $user = $request->user();
+        } else {
 
-        Auth::logout();
-       
-        $user->delete();
+            $request->validateWithBag('userDeletion', [
+                'password' => ['required', 'current_password'],
+            ]);
+            $user = $request->user();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            Auth::logout();
 
-        return Redirect::to('/');
+            $user->delete();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return Redirect::to('/');
+
+        }
     }
 }

@@ -9,6 +9,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                
                 <div class="p-6 text-gray-900 dark:text-black">
                     @if (Route::currentrouteName() === 'blogs.show')
                         <div id="post"
@@ -31,35 +32,35 @@
                             <p class="text-xl font-bold text-gray-900  dark:text-gray-100">
                                 {{ $postContent['title'] }}
                             </p>
-
-                            <!-- Alpine.js Lightbox -->
-                            <div x-data="{ open: false, imgSrc: '' }">
-                                <div class="flex flex-wrap gap-4 mt-3">
-                                   
+                            @if ($blog->photo_name)
+                                <!-- Alpine.js Lightbox -->
+                                <div x-data="{ open: false, imgSrc: '' }">
+                                    <div class="flex flex-wrap gap-4 mt-3">
                                         <div class="relative w-full md:w-1/2 lg:w-1/3">
                                             <!-- Clickable Image -->
                                             <img @click="open = true; imgSrc = '{{ asset('/storage/' . $blog->photo_name) }}'"
                                                 class="cursor-pointer rounded-lg shadow object-cover w-full h-full"
                                                 src="{{ asset('/storage/' . $blog->photo_name) }}" alt="Blog Image">
                                         </div>
-                                    
-                                </div>
 
-                                <!-- Lightbox Modal -->
-                                <div x-show="open" x-transition.opacity
-                                    class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur flex items-center justify-center p-4 z-50"
-                                    @click="open = false" @keydown.window.escape="open = false" style="display: none;">
-                                    <div class="relative max-w-4xl w-full">
-                                      
-                                        <img :src="imgSrc"
-                                            class="w-full max-h-screen object-contain rounded-lg shadow-lg"
-                                            alt="Zoomed Image">
+                                    </div>
+
+                                    <!-- Lightbox Modal -->
+                                    <div x-show="open" x-transition.opacity
+                                        class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur flex items-center justify-center p-4 z-50"
+                                        @click="open = false" @keydown.window.escape="open = false"
+                                        style="display: none;">
+                                        <div class="relative max-w-4xl w-full">
+
+                                            <img :src="imgSrc"
+                                                class="w-full max-h-screen object-contain rounded-lg shadow-lg"
+                                                alt="Zoomed Image">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
+                            @endif
                             <p id="postContent" class="postContent text-base text-gray-700 mt-2 dark:text-gray-300"
-                                data-postvalue="{{ $postContent['post'] }}"></p>
+                                data-postvalue="{!! nl2br(e($postContent['post'])) !!}"></p>
                         </div>
                     @else
                         @if (count($posts) > 0)

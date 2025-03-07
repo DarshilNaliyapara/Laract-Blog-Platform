@@ -1,7 +1,7 @@
 @foreach ($posts as $post)
     <div id="post"
         class="flex flex-col justify-between space-x-4 p-4 mb-4 mt-4 rounded-lg shadow-lg bg-white
-               dark:bg-gray-900  dark:border-gray-700">
+               dark:bg-gray-900  dark:border-gray-700 post">
 
         <span class="text-sm text-gray-600 dark:text-gray-400">{{ $post->user->name }}</span>
         <small
@@ -15,20 +15,24 @@
         @endphp
 
         <a href="{{ route('blogs.show', $post->slug) }}" class="mt-1">
-            <p class="text-xl font-bold text-gray-900 underline dark:text-gray-100">{{ $postContent['title'] }}</p>
-            <div class="flex flex-wrap gap-4 mt-3">
-               
+            <p class="posttitle text-xl font-bold text-gray-900 underline dark:text-gray-100">{{ $postContent['title'] }}</p>
+            @if ($post->photo_name)
+                <div class="flex flex-wrap gap-4 mt-3">
                     <div class="relative w-full md:w-1/2 lg:w-1/3">
-
                         <img class="cursor-pointer rounded-lg shadow-lg object-cover w-full h-full"
                             src="{{ asset('/storage/' . $post->photo_name) }}" alt="Blog Image">
                     </div>
-               
-            </div>
-        </a>
-        <p id="postContent" class="postContent text-base text-gray-700 mt-2 dark:text-gray-300"
-            data-postvalue="{{ Str::words($postContent['post'], 20, '<strong>...Read More</strong>') }}"></p>
 
+                </div>
+            @endif
+        </a>
+        @auth
+            <p id="postContent" class="postContent text-base text-gray-700 mt-2 dark:text-gray-300"
+                data-postvalue="{{ Str::words($postContent['post'], 20, '<strong>...Read More</strong>') }}"></p>
+        @else
+            <p id="postContent" class="postContent text-base text-gray-700 mt-2 dark:text-gray-300"
+                data-postvalue="{!! nl2br(e($postContent['post'])) !!}"></p>
+        @endauth
         <div class="mt-4 p-4 rounded-lg w-auto postcomments bg-gray-100 dark:bg-gray-800 dark:border-gray-700"
             data-commentid="{{ $post->id }}">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">Comments</h3>
@@ -52,19 +56,29 @@
 
         <form id="comment-form">
             <p class="text-red-500 text-sm mt-1 err" id="errcmt"></p>
-            <x-text-input type="text" data-commentid="{{ $post->id }}"  id="comment" name="comment"
+            <x-text-input type="text" data-commentid="{{ $post->id }}" id="comment" name="comment"
                 class="rounded-lg border-gray-200 p-2 mt-2 mr-1 comment dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                 placeholder="Comment" />
 
-           
+
             <div class="mt-4 sm:flex-row inline-flex">
 
-                <x-primary-button type="submit" data-comment-btnid="{{ $post->id }}" 
-                    class="comment-btn mr-2  dark:hover:bg-blue-700 focus:ring-blue-500 dark:active:bg-blue-400 dark:bg-blue-400">
-                    Comment
-                </x-primary-button>
+                @auth
+                    <x-primary-button type="submit" data-comment-btnid="{{ $post->id }}"
+                        class="comment-btn mr-2 dark:hover:bg-blue-700 focus:ring-blue-500 dark:active:bg-blue-400 dark:bg-blue-400">
+                        Comment
+                    </x-primary-button>
+                @else
+                    <a href="{{ route('login') }}">
+                        <x-primary-button type="button"
+                            class=" comment-btn mr-2 dark:hover:bg-blue-700 focus:ring-blue-500 dark:active:bg-blue-400 dark:bg-blue-400">
+                            Comment
+                        </x-primary-button>
+                    </a>
+                @endauth
                 <x-primary-button data-show-comment-btnid="{{ $post->id }}" type="button"
                     class="show-comment-btn dark:hover:bg-green-700 dark:bg-green-600 dark:text-gray-200 dark:text-gray-200">
+
                     Comments
                 </x-primary-button>
             </div>

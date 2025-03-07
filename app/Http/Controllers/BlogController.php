@@ -48,8 +48,8 @@ class BlogController extends Controller
     {
 
         $validated = $request->validate([
-            'title' => 'required|min:5|string',
-            'post' => 'required|min:15|string|regex:/^[^<>]*$/',
+            'title' => 'required|min:5|max:30|string',
+            'post' => 'required|min:15|max:1000|string|regex:/^[^<>]*$/',
             'file' => 'mimes:jpeg,jpg,png|max:5000',
         ]);
 
@@ -61,8 +61,11 @@ class BlogController extends Controller
         if ($file) {
             $name = $file->getClientOriginalName();
             $path = $request->file('file')->storeAs('files', $name, 'public');
+            $blog = $request->user()->blog()->create(['posts' => json_encode($validated), 'slug' => $slug, 'photo_name' => $path]);
+        } else {
+            $blog = $request->user()->blog()->create(['posts' => json_encode($validated), 'slug' => $slug]);
         }
-        $blog = $request->user()->blog()->create(['posts' => json_encode($validated), 'slug' => $slug, 'photo_name' => $path]);
+
 
 
         return redirect()->route('dashboard')->with('success', 'Blog created successfully.');
@@ -72,8 +75,8 @@ class BlogController extends Controller
     {
 
         $validated = $request->validate([
-            'title' => 'required|min:5|string',
-            'post' => 'required|min:15|string',
+            'title' => 'required|min:5|max:30|string',
+            'post' => 'required|min:15|max:1000|string|regex:/^[^<>]*$/',
         ]);
         $uid = Str::random(3) . rand(10, 99);
         $uuid = $validated['title'] . '-' . $uid;

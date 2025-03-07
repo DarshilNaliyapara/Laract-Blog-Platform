@@ -15,59 +15,73 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js','resources/js/jquery.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/jquery.js'])
 </head>
 
-   
+
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-    <header class="bg-gray-800 shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <!-- Logo & Brand Name -->
-                <div class="flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
-                        <x-application-logo class="h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                        <span class="text-xl font-bold text-gray-800 dark:text-gray-200">Laract</span>
-                    </a>
+        <header class="bg-gray-800 shadow">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <!-- Logo & Brand Name -->
+                    <div class="flex items-center">
+                        <a href="{{ route('dashboard') }}" class="flex items-center space-x-2">
+                            <x-application-logo class="h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                            <span class="text-xl font-bold text-gray-800 dark:text-gray-200">Laract</span>
+                        </a>
+                       
+                            <a href="{{ route('blogs.index') }}" class="flex items-center ml-4">
+                                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                                    {{ __('Create Blog') }}
+                                </x-nav-link>
+                            </a>
+                     
+                    </div>
+                    
+                    <!-- Navigation Links -->
+                    <div class="hidden sm:flex space-x-4">
+                        <a href="{{ route('register') }}"
+                            class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition">Register</a>
+                        <a href="{{ route('login') }}"
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition">Login</a>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <div class="sm:hidden">
+                        <button id="mobile-menu-button" class="text-gray-700 dark:text-gray-200 focus:outline-none">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16m-7 6h7"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Navigation Links -->
-                <div class="hidden sm:flex space-x-4">
-                    <a href="{{ route('register') }}" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white transition">Register</a>
-                    <a href="{{ route('login') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition">Login</a>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <div class="sm:hidden">
-                    <button id="mobile-menu-button" class="text-gray-700 dark:text-gray-200 focus:outline-none">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                        </svg>
-                    </button>
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="hidden sm:hidden">
+                    <div class="flex flex-col space-y-2 py-3">
+                        <a href="{{ route('register') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Register</a>
+                        <a href="{{ route('login') }}"
+                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Login</a>
+                    </div>
                 </div>
             </div>
+        </header>
 
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden sm:hidden">
-                <div class="flex flex-col space-y-2 py-3">
-                    <a href="{{ route('register') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Register</a>
-                    <a href="{{ route('login') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Login</a>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Slot Content -->
-    <main class="mt-6">
-        {{ $slot }}
-    </main>
+        <!-- Slot Content -->
+        <main class="mt-6">
+            {{ $slot }}
+        </main>
     </div>
     <script>
-        document.getElementById('mobile-menu-button').addEventListener('click', function () {
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
     </script>
-       
-    </body>
+
+</body>
+
 </html>
