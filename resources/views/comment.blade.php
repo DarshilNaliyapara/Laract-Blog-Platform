@@ -15,7 +15,8 @@
         @endphp
 
         <a href="{{ route('blogs.show', $post->slug) }}" class="mt-1">
-            <p class="posttitle text-xl font-bold text-gray-900 underline dark:text-gray-100">{{ $postContent['title'] }}</p>
+            <p class="posttitle text-xl font-bold text-gray-900 underline dark:text-gray-100">{{ $postContent['title'] }}
+            </p>
             @if ($post->photo_name)
                 <div class="flex flex-wrap gap-4 mt-3">
                     <div class="relative w-full md:w-1/2 lg:w-1/3">
@@ -56,23 +57,19 @@
 
         <form id="comment-form">
             <p class="text-red-500 text-sm mt-1 err errcmt"></p>
-            <x-text-input type="text" data-commentid="{{ $post->id }}" id="comment" name="comment"
-                class="rounded-lg border-gray-200 p-2 mt-2 mr-1 comment dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                placeholder="Comment" />
-            <div class="mt-4 sm:flex-row inline-flex">
+            @auth
 
+                <x-text-input type="text" data-commentid="{{ $post->id }}" id="comment" name="comment"
+                    class="rounded-lg border-gray-200 p-2 mt-2 mr-1 comment dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                    placeholder="Comment" />
+            @endauth
+            <div class="mt-4 sm:flex-row inline-flex">
                 @auth
                     <x-primary-button type="submit" data-comment-btnid="{{ $post->id }}"
                         class="comment-btn mr-2 dark:hover:bg-blue-700 focus:ring-blue-500 dark:active:bg-blue-400 dark:bg-blue-400">
                         Comment
                     </x-primary-button>
-                @else
-                    <a href="{{ route('login') }}">
-                        <x-primary-button type="button"
-                            class=" comment-btn mr-2 dark:hover:bg-blue-700 focus:ring-blue-500 dark:active:bg-blue-400 dark:bg-blue-400">
-                            Comment
-                        </x-primary-button>
-                    </a>
+
                 @endauth
                 <x-primary-button data-show-comment-btnid="{{ $post->id }}" type="button"
                     class="show-comment-btn dark:hover:bg-green-700 dark:bg-green-600 dark:text-gray-200 dark:text-gray-200">

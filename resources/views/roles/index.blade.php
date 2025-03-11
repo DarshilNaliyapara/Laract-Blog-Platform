@@ -86,41 +86,41 @@
                                             Set Role
                                         </button>
                                     </form>
+                                    
                                     <x-danger-button x-data=""
                                         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
                                         class="mt-2">{{ __('Delete Account') }}</x-danger-button>
-
-                                    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-                                        <form class="p-6 delete-user">
-
-                                            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                                {{ __('Are you sure you want to delete your account?') }}
-                                            </h2>
-
-                                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-                                            </p>
-
-                                            <div class="mt-6 flex justify-end">
-                                                <x-secondary-button x-on:click="$dispatch('close')">
-                                                    {{ __('Cancel') }}
-                                                </x-secondary-button>
-
-                                                <button type="button"
-                                                    class="ml-2 del-account-btn inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
-                                                    data-deleteaccount="{{ $user->id }}">
-                                                   Delete Account
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </x-modal>
                                 @endif
                             </td>
                         </tr>
                     @endforeach
+
                 </tbody>
             </table>
         </div>
     </div>
+    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+        <form class="p-6 delete-user">
 
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Are you sure you want to delete your account?') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+            </p>
+
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+
+                <button type="button"
+                    class="ml-2 del-account-btn inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-500 active:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
+                    data-deleteaccount="{{ $user->id }}">
+                    Delete Account
+                </button>
+            </div>
+        </form>
+    </x-modal>
 </x-app-layout>

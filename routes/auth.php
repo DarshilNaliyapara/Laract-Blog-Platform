@@ -40,10 +40,13 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
-        Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-            $request->fulfill();
-            return redirect('/');
-        })->middleware(['signed'])->name('verification.verify');
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/');
+    })->middleware(['signed'])->name('verification.verify');
+
+    Route::post('/email/verify/otp', [VerifyEmailController::class, 'otpverify'])
+    ->name('verification.verify.otp');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')

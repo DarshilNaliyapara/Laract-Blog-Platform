@@ -8,9 +8,25 @@
             {{ __('A new verification link has been sent to the email address you provided during registration.') }}
         </div>
     @endif
+    <div>
+        <form method="POST" action="{{ route('verification.verify.otp') }}">
+            @csrf
+            @if ($errors->any())
+                <div style="color: red;">
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+            <x-text-input name="otp" placeholder="OTP" required />
+            <x-primary-button>
+                {{ __('Verify Email') }}
+            </x-primary-button>
+        </form>
 
+    </div>
     <div class="mt-4 flex items-center justify-between">
-        
+
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
 

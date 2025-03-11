@@ -91,6 +91,7 @@ $(document).ready(function () {
 
     $("form#comment-form").submit(function (e) {
         e.preventDefault();
+       
         $(".err").text("");
         var form = $(this);
         var commentInput = form.find("input[name='comment']").val();
